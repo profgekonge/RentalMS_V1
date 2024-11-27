@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rental Management Dashboard{% endblock %}</title>
+        <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS (with Popper.js for dropdowns) - place just before </body> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <i class="fas fa-building"></i>
+        <span>RentManager</span>
+    </div>
+    <nav class="nav flex-column">
+        <a class="nav-link" href="{% url 'index' %}">
+            <i class="fas fa-gauge"></i>
+            <span>Dashboard</span>
+        </a>
+        <a class="nav-link" href="{% url 'properties' %}">
+          <i class="fas fa-key"></i>
+          <span>Properties</span>
+      </a>
+        <a class="nav-link" href="{% url 'tenants' %}">
+            <i class="fas fa-users"></i>
+            <span>Tenants</span>
+        </a>
+        <a class="nav-link" href="{% url 'payments' %}">
+            <i class="fas fa-dollar-sign"></i>
+            <span>Payments</span>
+        </a>
+        <a class="nav-link" href="{% url 'maintenance' %}">
+            <i class="fas fa-tools"></i>
+            <span>Maintenance</span>
+        </a>
+        <a class="nav-link" href="#">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+        </a>
+
+    </nav>
+</div>
+
+<div class="main-content">
+    <div class="container-fluid">
+        <h1 class="mb-4 sticky-sm-top bg-body">{% block header %}Dashboard Overview{% endblock %}</h1>
+        
+        {% block content %}
+        
+        {% endblock content %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
+<script src="{% static 'js/formpopup.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    
+</script>

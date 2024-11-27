@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block header %}
+<h1>Dashboard Overview</h1>
+{% endblock %}
+
+<div class="main-content">
+    <div class="container-fluid">
+    {% block content %}
+        <!-- Include Chart.js at the end for all charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Filters Row -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <select class="form-select">
+                                    <option>All Locations</option>
+                                    <option>Downtown</option>
+                                    <option>Suburbs</option>
+                                    <option>Waterfront</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="form-select">
+                                    <option>All Status</option>
+                                    <option>Occupied</option>
+                                    <option>Vacant</option>
+                                    <option>Maintenance</option>
+                                </select>
+                            </div>
+                            
+
+                            <div class="col-md-3 mb-3">
+                                <select class="form-select">
+                                    <option>All Types</option>
+                                    <option>Apartment</option>
+                                    <option>House</option>
+                                    <option>Condo</option>
+                                </select>
+                            </div>
+                            <h1>Welcome, {{ user.username }}</h1>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards and Charts -->
+        <div class="row g-4">
+            <!-- Rental Income Trends Chart -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Rent Collection Status</h5>
+                        <div class="chart-container">
+                            <canvas id="paymentStatusChart"></canvas>
+                        </div>
+                        <script>
+                            var ctx = document.getElementById('incomeChart').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: {{ monthly_labels|safe }},
+                                    datasets: [{
+                                        label: 'Payments Over Time',
+                                        data: {{ monthly_totals|safe }},
+                                        borderColor: '#4CAF50',
+                                        fill: false
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { position: 'top' }
+                                    },
+                                    scales: {
+                                        y: { beginAtZero: true }
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupancy Rates Chart -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Occupancy Rates</h5>
+                        <div class="chart-container">
+                            <canvas id="occupancyRateChart"></canvas>
+                        </div>
+                        <script>
+                            var ctx = document.getElementById('occupancyRateChart').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: ['Occupied', 'Vacant'],
+                                    datasets: [{
+                                        data: [{{ occupied_rooms }}, {{ vacant_rooms }}],
+                                        backgroundColor: ['#4CAF50', '#FF5733'],
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { position: 'bottom' }
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Payments Trend Chart -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Maintenance Requests</h5>
+                        <div class="chart-container">
+                            <canvas id="monthlyPaymentsChart"></canvas>
+                            <script>
+                                // Monthly Payments Trend Chart
+                                var paymentsCtx = document.getElementById('monthlyPaymentsChart').getContext('2d');
+                                var monthlyPaymentsChart = new Chart(paymentsCtx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: {{ monthly_labels|safe }},
+                                        datasets: [{
+                                            label: 'Payments by Month',
+                                            data: {{ monthly_totals|safe }},
+                                            borderColor: '#FF5733',
+                                            fill: false,
+                                            borderWidth: 2
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        scales: {
+                                            x: { 
+                                                title: { display: true, text: 'Month' } 
+                                            },
+                                            y: { 
+                                                title: { display: true, text: 'Amount' } 
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <!-- Script for maintenance chart can be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rent Collection Status Chart -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Rent Collection Status</h5>
+                        <div class="chart-container">
+                            <canvas id="rentCollectionStatusChart"></canvas>
+                        </div>
+                        <script>
+                            var ctx = document.getElementById('rentCollectionStatusChart').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Paid', 'Pending', 'Unpaid'],
+                                    datasets: [{
+                                        label: 'Rent Collection Status',
+                                        data: [{{ paid_count }}, {{ pending_count }}, {{ unpaid_count }}],
+                                        backgroundColor: ['#4CAF50', '#FFC107', '#FF5733'],
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { display: false }
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Tenants List -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Tenants</h5>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center gap-3">
+                                <div class="tenant-avatar">JD</div>
+                                <div>
+                                    <h6 class="mb-0">John Doe</h6>
+                                    <small class="text-muted">Unit 301 • $1,500/mo</small>
+                                    <div><small class="text-muted">Lease ends: Dec 2024</small></div>
+                                </div>
+                            </div>
+                            <!-- Add more tenants here as needed -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endblock content %}
+    </div>
+</div>
+
+
